@@ -1,1 +1,1 @@
-<h2 text-align = "center"> Ostad-Course </h2>
+<h1 text-align = "center"> Ostad-Course </h1>
