@@ -1,0 +1,133 @@
+import json
+import os
+
+
+BOOKS_FILE = "books.json"
+
+def load_books():
+    
+    if os.path.exists(BOOKS_FILE):
+        with open(BOOKS_FILE, "r") as file:
+            return json.load(file)
+    return []
+
+def save_books(books):
+    
+    with open(BOOKS_FILE, "w") as file:
+        json.dump(books, file, indent=4)
+
+def display_menu():
+    
+    print("\n--- Book Store Management System ---")
+    print("1. Add Book")
+    print("2. View Books")
+    print("3. Remove Book")
+    print("4. Exit")
+
+
+def add_book():
+    
+    books = load_books()
+    
+    print("\n--- Add a New Book ---")
+    title = input("Enter the book title: ").strip()
+    author = input("Enter the author: ").strip()
+    isbn = input("Enter the ISBN: ").strip()
+    genre = input("Enter the genre: ").strip()
+    
+    
+    while True:
+        try:
+            price = float(input("Enter the price: ").strip())
+            if price <= 0:
+                print("Error: Price must be a positive number.")
+            else:
+                break
+        except ValueError:
+            print("Error: Invalid input. Price must be a number.")
+    
+    
+    while True:
+        try:
+            quantity = int(input("Enter the quantity in stock: ").strip())
+            if quantity < 0:
+                print("Error: Quantity must be a non-negative integer.")
+            else:
+                break
+        except ValueError:
+            print("Error: Invalid input. Quantity must be an integer.")
+
+    
+    for book in books:
+        if book["isbn"] == isbn:
+            print("Error: A book with this ISBN already exists.")
+            return
+
+    
+    new_book = {
+        "title": title,
+        "author": author,
+        "isbn": isbn,
+        "genre": genre,
+        "price": price,
+        "quantity": quantity
+    }
+    books.append(new_book)
+    save_books(books)
+    print("Book added successfully!")
+
+def view_books():
+    
+    books = load_books()
+    
+    if not books:
+        print("No books available.")
+        return
+
+    print("\n--- List of Books ---")
+    for book in books:
+        print(f"Title: {book['title']}")
+        print(f"Author: {book['author']}")
+        print(f"ISBN: {book['isbn']}")
+        print(f"Genre: {book['genre']}")
+        print(f"Price: ${book['price']:.2f}")
+        print(f"Quantity in Stock: {book['quantity']}")
+        print("-" * 30)
+
+def remove_book():
+   
+    books = load_books()
+    
+    if not books:
+        print("No books available to remove.")
+        return
+
+    isbn = input("Enter the ISBN of the book to remove: ").strip()
+    for book in books:
+        if book["isbn"] == isbn:
+            books.remove(book)
+            save_books(books)
+            print("Book removed successfully!")
+            return
+    print("Error: Book not found.")
+
+
+def main():
+    while True:
+        display_menu()
+        choice = input("Enter your choice: ").strip()
+        
+        if choice == "1":
+            add_book()
+        elif choice == "2":
+            view_books()
+        elif choice == "3":
+            remove_book()
+        elif choice == "4":
+            print("Exiting the program. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
